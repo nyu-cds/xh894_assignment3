@@ -11,6 +11,7 @@
 
 
 '''
+import itertools
 PI = 3.14159265358979323
 SOLAR_MASS = 4 * PI * PI
 DAYS_PER_YEAR = 365.24
@@ -50,16 +51,7 @@ BODIES = {
                  -9.51592254519715870e-05 * DAYS_PER_YEAR],
                 5.15138902046611451e-05 * SOLAR_MASS)}
 #use set to reduce loop overhead
-my_set=set({('jupiter', 'neptune'),
-           ('jupiter', 'saturn'),
-           ('jupiter', 'sun'),
-           ('jupiter', 'uranus'),
-           ('neptune', 'saturn'),
-           ('neptune', 'sun'),
-           ('neptune', 'uranus'),
-           ('saturn', 'sun'),
-           ('saturn', 'uranus'),
-           ('sun', 'uranus')})
+uniq_body_pair = list(itertools.combinations(BODIES.keys(), 2))
 
 
 def advance(dt,iterations,bodies=BODIES):
@@ -67,7 +59,7 @@ def advance(dt,iterations,bodies=BODIES):
         advance the system one timestep
     '''
     for _ in range(iterations):
-        for (body1,body2) in my_set:
+        for (body1,body2) in uniq_body_pair:
             ([x1, y1, z1], v1, m1) = BODIES[body1]
             ([x2, y2, z2], v2, m2) = BODIES[body2]
             (dx, dy, dz) = (x1-x2, y1-y2, z1-z2)               
@@ -96,7 +88,7 @@ def report_energy(e=0.0,bodies=BODIES):
     '''
         compute the energy and return it so that it can be printed
     '''
-    for (body1,body2) in my_set:
+    for (body1,body2) in uniq_body_pair:
         ((x1, y1, z1), v1, m1) = BODIES[body1]
         ((x2, y2, z2), v2, m2) = BODIES[body2]
         
