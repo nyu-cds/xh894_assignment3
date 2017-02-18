@@ -130,9 +130,7 @@ def nbody(loops, reference, iterations,px=0.0, py=0.0, pz=0.0,bodies=BODIES):
     
     for body in BODIES.values():
         (r, [vx, vy, vz], m) = body
-        px -= vx * m
-        py -= vy * m
-        pz -= vz * m
+        [px, py, pz] = list(map(lambda x,y: y-x*m, [vx,vy,vz],[px,py,pz]))
     (r, v, m) = BODIES[reference]
     v[0] = px / m
     v[1] = py / m
