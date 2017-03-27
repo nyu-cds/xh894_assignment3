@@ -5,8 +5,8 @@
 '''
     Version_opt: Final version
     Version_opt execution time: 36.08s
-    Version_cython execution time :6.46s
-    Relative Speedup : 5.585
+    Version_cython execution time :6.01s
+    Relative Speedup : 6.00332779
    
 
 
@@ -64,8 +64,8 @@ cdef void advance(float dt,int iterations,dict bodies=BODIES):
     cdef list v1
     cdef list v2
     cdef list r
-    cdef str body1, body2, body
     cdef int _
+    cdef str body1, body2
     for _ in range(iterations):
         #update
         for (body1,body2) in uniq_body_pair:
@@ -98,7 +98,8 @@ cdef float report_energy(float e=0.0,dict bodies=BODIES):
     cdef list v1
     cdef list v2
     cdef list r
-    cdef str body1, body2, body
+    cdef str body1, body2
+  
     for (body1,body2) in uniq_body_pair:
         ((x1, y1, z1), v1, m1) = BODIES[body1]
         ((x2, y2, z2), v2, m2) = BODIES[body2]
@@ -111,7 +112,7 @@ cdef float report_energy(float e=0.0,dict bodies=BODIES):
         
     return e
 @cython.boundscheck(False)
-cdef void nbody(int loops,str reference, int iterations, float px=0.0,float py=0.0,float pz=0.0,dict bodies=BODIES):
+cpdef nbody(int loops,str reference, int iterations, float px=0.0,float py=0.0,float pz=0.0,dict bodies=BODIES):
     '''
         nbody simulation
         loops - number of loops to run
@@ -121,14 +122,16 @@ cdef void nbody(int loops,str reference, int iterations, float px=0.0,float py=0
     # Set up global state
     #offset_momentum
     #declare all variables in function
-    cdef float vx, vy, vz, m, x, y
+    cdef float vx, vy, vz, m
     cdef list v
     cdef list r
-    cdef str body
     cdef int _
     for body in BODIES.values():
         (r, [vx, vy, vz], m) = body
-        [px, py, pz] = list(map(lambda x,y: y-x*m, [vx,vy,vz],[px,py,pz]))
+        px -= vx * m
+        py -= vy * m
+        pz -= vz * m
+        
     (r, v, m) = BODIES[reference]
     v[0] = px / m
     v[1] = py / m
