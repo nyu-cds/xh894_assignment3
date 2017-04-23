@@ -9,7 +9,7 @@ Test
 
 """
 import unittest
-from parallel_sorter import sort
+from parallel_sorter import sort, get_input
 from mpi4py import MPI
 import numpy as np
 
@@ -20,6 +20,13 @@ class TestSorter(unittest.TestCase):
         self.rank = comm.Get_rank()
     def tearDown(self): 
         pass
+    def test_get_input(self):
+        '''
+        check the input 
+        '''
+        if self.rank == 0:
+            inp = get_input()
+            self.assertIsInstance(inp, int)
 
     def test_sort(self):
         '''
